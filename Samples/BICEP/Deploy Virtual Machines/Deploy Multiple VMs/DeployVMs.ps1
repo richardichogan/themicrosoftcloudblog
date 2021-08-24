@@ -35,7 +35,8 @@ try
     $SubNetName = $Config.Configuration.Deployment.SubNetName
 
     #Check to see if resource group already exists
-    $ResourceGroup = Get-AzResourceGroup -name 'VirtualMachines'
+    $ResourceGroup = Get-AzResourceGroup -name $ResourceGroupName
+
     if (!$ResourceGroup)
     {
         #Create Resource Group
