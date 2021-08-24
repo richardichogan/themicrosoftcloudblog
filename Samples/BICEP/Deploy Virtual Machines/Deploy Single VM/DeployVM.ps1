@@ -1,3 +1,4 @@
+
 #***********************************************************************
 # Script           : DeploySingleVM.ps1
 # Author           : Richard Hogan
@@ -35,13 +36,9 @@ try {
     #Deploy Resources
     Write-Host "Deploying Resources." -ForegroundColor Green
     #This assumes that there is a resource group already created, if this is not the case you will need to create a resoruce group first.
-    New-AzResourceGroupDeployment -ResourceGroupName '<ResourceGroupName>' -TemplateFile ./DeployVMs.bicep -VMName 'NewVM01' 
+    New-AzResourceGroupDeployment -ResourceGroupName '<ResourceGroupName>' -TemplateFile ./VirtualMachine-Deployment.bicep -VMName '<VM Name>' 
     Write-Host "Resources Successfully Deployed." -ForegroundColor Green
 }
 catch {
     Write-Host "Something went wrong." -ForegroundColor Red
 }
-
-
-
-

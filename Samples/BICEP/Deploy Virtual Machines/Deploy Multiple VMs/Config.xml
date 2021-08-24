@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Deployment Name="VM Deployment" ResourceGroupName="VirtualMachines" VNetName="VMVNet01" Region="uksouth" SubNetName="VMSubNet01" />
+    <VirtualMachines>
+        <VM VMName="VM01" NetworkInterface="Vm01Nic01" PublicIPName="Vm01Pip01" OSDiskName="Vm01OSDisk01" />
+        <VM VMName="VM02" NetworkInterface="Vm01Nic02" PublicIPName="Vm01Pip02" OSDiskName="Vm01OSDisk02" />
+    </VirtualMachines>    
+</Configuration>
+
