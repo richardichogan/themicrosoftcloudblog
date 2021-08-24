@@ -1,9 +1,9 @@
 #***********************************************************************
-# Script           : DeployVM.ps1
+# Script           : DeployVMs.ps1
 # Author           : Richard Hogan
 # Created          : 19-08-2021
 # ***********************************************************************
-# <copyright file="DeployVM.ps1" company="N/A">
+# <copyright file="DeployVMs.ps1" company="N/A">
 # THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
 # KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
@@ -16,10 +16,14 @@
 Clear-Host
 
 #Declaring Variables
-$Path = 'Z:\Development\themicrosoftcloudblog\Samples\BICEP\Deploy Virtual Machines\Deploy Multiple VMs\'
+$Path = "Z:\Development\themicrosoftcloudblog\Samples\BICEP\Deploy Virtual Machines\Deploy Multiple VMs\"
+$ConfigFile = $Path + "Config.xml"
 $VNetBicepFile = $Path + 'VNET-Deployment.bicep'
 $VMBicepFile = $Path + 'VirtualMachine-Deployment.bicep'
 
+
+#Import Config File
+$Global:Config = [xml](Get-Content $ConfigFile)
 try
 {
     Write-Host "Checking Resource Group." -ForegroundColor Yellow
@@ -44,8 +48,7 @@ try
     Write-Host "Deploying VNet." -ForegroundColor Yellow
 
     #Deploying VNet seperately as this will be used for each VM in this sample
-    New-AzResourceGroupDeployment -ResourceGroupName  VirtualMachines -TemplateFile `
-        $VNetBicepFile -VNetName $VNetName -SubNetName $SubNetName -Location $Location | Out-Null
+    New-AzResourceGroupDeployment -ResourceGroupName  VirtualMachines -TemplateFile $VNetBicepFile -VNetName $VNetName -SubNetName $SubNetName -Location $Location | Out-Null
 
     Write-Host "VNet Deployed." -ForegroundColor Green
     Write-Host "Deploying Virtual Machines and components." -ForegroundColor Yellow
@@ -53,12 +56,10 @@ try
     #Get VNetID so it can be linked to the VM.
     $VNetID = Get-AzResource -name $VNetName -ResourceGroupName 'VirtualMachines'
 
-    #Deploy rest of components
+    #Deploy Virtual Machines
     foreach ($VM in $Config.Configuration.VirtualMachines.VM)
     {
-        New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile `
-            $VMBicepFile -VMName $VM.VMName -SubNetName $SubNetName -Location $Location -OSDiskName `
-            $VM.OSDiskName -VNetID $VNetID.id -NICName $VM.NetworkInterface -PublicIPAddressName $VM.PublicIPName | Out-Null
+        New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile $VMBicepFile -VMName $VM.VMName -SubNetName $SubNetName -Location $Location -OSDiskName $VM.OSDiskName -VNetID $VNetID.id -NICName $VM.NetworkInterface -PublicIPAddressName $VM.PublicIPName | Out-Null
 
         Write-Host "Virtual Machine Deployed." -ForegroundColor Green
         Write-Host
